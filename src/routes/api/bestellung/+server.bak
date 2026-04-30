@@ -1,0 +1,78 @@
+import { json } from '@sveltejs/kit';
+import { db } from '$lib/db';
+import { redirect } from '@sveltejs/kit';
+import type { RequestHandler } from './$types.js';
+
+
+const logoMap: Record<"Logo A" | "Logo B" | "Kein Logo", number> = {
+  "Logo A": 1,
+  "Logo B": 2,
+  "Kein Logo": 3
+};
+
+export async function POST({ request }) {
+  const { cart } = await request.json();
+
+  if (!Array.isArray(cart) || cart.length === 0) {
+    return json({ error: "Warenkorb ist leer" }, { status: 400 });
+  }
+
+  // kunde
+export const POST: RequestHandler = async ({ request, cookies }) => {
+  // Session auslesen
+  const session = cookies.get('session');
+  if (!session) throw redirect(303, '/login');
+
+  const kunde = Number(session);
+
+  // Warenkorb lesen
+  const { cart } = await request.json();
+
+  if (!Array.isArray(cart) || cart.length === 0) {
+    return json({ error: 'Warenkorb ist leer' }, { status: 400 });
+  }
+
+  // Bestellung anlegen, geht weil das hier eine +server Datei ist
+  const bestellung = await db.bestellung.create({
+    data: {
+      kundenId,
+      datum: new Date(),
+      status: "offen"
+    }
+  });
+
+  for (const item of cart) {
+    const produkt = await db.produkt.findFirst({
+      where: {
+        name: {
+      contains: item.product.name
+    },
+        farbe: item.variant.color,
+        groesse: item.variant.size,
+        logo: logoMap[item.variant.logo as keyof typeof logoMap]
+      }
+    });
+
+    if (!produkt) continue;
+
+    await db.bestellungProdukt.create({
+      data: {
+        bestellungId: bestellung.id,
+        produktId: produkt.id,
+        menge: item.quantity
+      }
+    });
+    await db.produkt.update({
+  where: { id: produkt.id },
+  data: {
+    bestand: {
+      decrement: item.quantity
+    }
+  }
+});
+
+
+  }
+
+  return json({ success: true, bestellungId: bestellung.id });
+}}
