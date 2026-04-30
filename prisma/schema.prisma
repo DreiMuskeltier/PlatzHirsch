@@ -15,6 +15,7 @@ model User {
   id        String   @id @default(cuid())
   name      String
   email     String   @unique
+  password  String
 
   rolle     String   @default("REGISTRIERT")
 
@@ -96,10 +97,11 @@ model Kommentar {
   id        String   @id @default(cuid())
   text      String
 
-  userId    String
+  userId    String?          // ← optional (war: String)
+  sessionId String?          // ← neu: für Gäste
   ortId     String
 
-  user      User @relation(fields: [userId], references: [id])
+  user      User? @relation(fields: [userId], references: [id])
   ort       Ort  @relation(fields: [ortId], references: [id])
 
   createdAt DateTime @default(now())
@@ -113,15 +115,17 @@ model Kommentar {
 model Favorite {
   id        String   @id @default(cuid())
 
-  userId    String
+  userId    String? 	// ← optional
+  sessionId String?          // ← neu: für Gäste
   ortId     String
 
-  user      User @relation(fields: [userId], references: [id])
+  user      User? @relation(fields: [userId], references: [id])
   ort       Ort  @relation(fields: [ortId], references: [id])
 
   createdAt DateTime @default(now())
 
   @@unique([userId, ortId])
+  @@unique([sessionId, ortId])  // ← neu
 }
 
 //////////////////////////////////////////////////
