@@ -90,7 +90,15 @@ console.log('🍪 Cookie gesetzt, setze Flash...');
     console.log("Created user:", created);
 
     cookies.set('flash', 'Registrierung erfolgreich ', { path: '/', maxAge: 5 });
-    redirect(303, '/home');
+// ← Session-Cookie setzen nach Registrierung
+    cookies.set('session', created.id, {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 7
+    });
+    
+    redirect(303, '/profil');
 
   },
   
