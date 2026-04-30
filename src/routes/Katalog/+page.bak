@@ -1,0 +1,33 @@
+import type { PageLoad } from './$types';
+import type { Product } from '$lib/types/product';
+
+export const load: PageLoad = () => {
+  const products: Product[] = [
+    {
+      id: 1,
+      name: 'T-Shirt',
+      price: 20,
+      colors: ['Rot', 'Blau', 'Schwarz'],
+      logos: ['Logo A', 'Logo B'],
+      sizes: ['S', 'M', 'L', 'XL']
+    },
+    {
+      id: 2,
+      name: 'Pullover',
+      price: 50,
+      colors: ['Grau', 'Schwarz'],
+      logos: ['Logo C'],
+      sizes: ['M', 'L']
+    },
+    {
+      id: 3,
+      name: 'Jacke',
+      price: 50,
+      colors: ['Grau', 'Schwarz'],
+      logos: ['Logo C'],
+      sizes: ['M', 'L']
+    }
+  ];
+
+  return { products };
+};

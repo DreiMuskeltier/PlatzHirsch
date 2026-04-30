@@ -1,0 +1,39 @@
+import type { PageLoad } from './$types';
+import type { Product } from '$lib/types/product';
+
+export const load: PageLoad = ({ params }) => {
+  const id = Number(params.id);
+
+  const products: Product[] = [
+    {
+      id: 1,
+      name: 'T-Shirt',
+      price: 20,
+      colors: ['Rot', 'Blau', 'Schwarz', 'Weiß'],
+      logos: ['Logo A', 'Logo B', 'Kein Logo'],
+      sizes: ['S', 'M', 'L']
+    },
+    {
+      id: 2,
+      name: 'Pullover',
+      price: 50,
+      colors: ['Rot', 'Blau', 'Schwarz', 'Weiß'],
+      logos: ['Logo A', 'Logo B', 'Kein Logo'],
+      sizes: ['S', 'M', 'L']
+    },
+    {
+      id: 3,
+      name: 'Jacke',
+      price: 50,
+      colors: ['Rot', 'Blau', 'Schwarz', 'Weiß'],
+      logos: ['Logo A', 'Logo B', 'Kein Logo'],
+      sizes: ['S', 'M', 'L']
+    }
+  ];
+
+  const product = products.find((p) => p.id === id);
+
+  return {
+    product
+  };
+};
