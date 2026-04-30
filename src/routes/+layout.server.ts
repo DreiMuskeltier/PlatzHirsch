@@ -9,3 +9,4 @@ export const load = ({ cookies }: { cookies: Cookies }) => {
 
   return { flash };
 };
+

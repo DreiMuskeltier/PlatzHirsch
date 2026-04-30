@@ -1,114 +1,107 @@
 import type { Actions } from './$types';
-import { db } from '$lib/db';
+import  db  from '$lib/db';
 import bcrypt from 'bcryptjs';
 import { fail, redirect } from '@sveltejs/kit';
 
-export const actions: Actions = {//für POST Funktion
-
-
-login: async ({ request }) => {
-  const formData = await request.formData();
-  const email = formData.get('email')?.toString().trim().toLowerCase();
-  const password = formData.get('password')?.toString();
-
-  if (!email || !password) return fail(400, { error: 'Alle Felder ausfüllen' });
-
-  const kunde = await db.kunde.findUnique({ where: { email } });
-  if (!kunde) return fail(400, { error: 'Email oder Passwort falsch' });
-
-  const valid = await bcrypt.compare(password, kunde.password);
-  if (!valid) return fail(400, { error: 'Email oder Passwort falsch' });
+export const actions: Actions = {//enthält alle möglichen POST-Action-Handler für die Seite
 
   
-  return {
-    needsConsent: true,
-    userId: kunde.id
-  };
-},
+  login: async ({ request, cookies }) => { //Funktion ist asynchron, weil wir Daten aus der DB lesen und schreiben, request → enthält die eingehenden Form-Daten (request.formData())
+                                                //cookies → Zugriff auf Cookies, um Sessions oder Flash-Nachrichten zu setzen 
 
+
+    //Form-Daten auslesen:
+    const formData = await request.formData();
+    const email = formData.get('email')?.toString().trim().toLowerCase();
+    const password = formData.get('password')?.toString();
+
+    if (!email || !password) return fail(400, { error: 'Alle Felder ausfüllen' });
+
+//Benutzer anhand der Email in der DB suchen:
+    const user = await db.user.findUnique({ where: { email } });
+    console.log('🔍 User found:', user ? 'JA' : 'NEIN');
+    if (!user) return fail(400, { error: 'Email oder Passwort falsch' });
+
+//Passwort prüfen mit bcrypt.compare:
+    const valid = await bcrypt.compare(password, user.password);
+    console.log('🔑 Passwort korrekt:', valid);
+    if (!valid) return fail(400, { error: 'Email oder Passwort falsch' });
+
+    // Speichert die Session im HTTP-Only-Cookie → schützt vor JS-Zugriff (Sicherheit), Dauer: 7 Tage - Später wird diese Session genutzt, um zu prüfen, ob der Benutzer eingeloggt ist
+    cookies.set('session', user.id.toString(), {
+      path: '/',
+      httpOnly: true,
+      sameSite: 'lax',
+      maxAge: 60*60*24*7 // 7 Tage
+    });
+
+console.log('🍪 Cookie gesetzt, setze Flash...');
+    // Flash-Banner setzen, kurze Nachricht für den Benutzer
+    cookies.set('flash', 'Login erfolgreich ', { path: '/profil', maxAge: 5 });
+
+      console.log('✅ Alles OK, redirect zu /profil');
+
+//leitet den Benutzer direkt zum start weiter:
+    redirect(303, '/profil'); 
+  },
+
+  
 
 
   //Form-Daten auslesen
-register: async ({ request }) => {
-  const formData = await request.formData();
+  register: async ({ request, cookies }) => { //Funktion ist asynchron, weil wir Daten aus der DB lesen und schreiben, request → enthält die eingehenden Form-Daten (request.formData())
+                                                //cookies → Zugriff auf Cookies, um Sessions oder Flash-Nachrichten zu setzen 
+  
+    const formData = await request.formData();
     const email = formData.get('email')?.toString().trim().toLowerCase();
     const password = formData.get('password')?.toString();
     const name = formData.get('name')?.toString();
-    const fname = formData.get('fname')?.toString();
-    const dbirthStr = formData.get('dbirth')?.toString(); // holt den Wert aus dem HTML-Formularfeld, dieser Wert ist immer ein String, toString ist nur sichehrietshalber
-    const street = formData.get('street')?.toString();
-    const ort = formData.get('ort')?.toString();
-    const plz = formData.get('plz')?.toString();
-//Hausnummer muss eine Zahl sein
-    const hausnummerStr = formData.get('hausnummer')?.toString();
-      const acceptPolicy = formData.get('acceptPolicy');
-  if (!acceptPolicy) {
-    return fail(400, { error: 'Bitte akzeptiere die Datenschutzbestimmungen.' });
-  }
     
-    if (!hausnummerStr) return fail(400, { error: 'Hausnummer fehlt' });
 
-    const hausnummer = parseInt(hausnummerStr, 10);
-    if (isNaN(hausnummer)) return fail(400, { error: 'Hausnummer ungültig' });
-
-    if (!email || !password || !name || !fname || !dbirthStr || !street || !ort || !plz) {
+    if (!email || !password || !name /*|| !fname || !dbirthStr || !street || !ort || !plz)*/) {
       return fail(400, { error: 'Alle Felder ausfüllen' });
     }
 
-    const existingkunde = await db.kunde.findUnique({ where: { email } });
-    if (existingkunde) return fail(400, { error: 'Email existiert bereits' });
+    const existinguser = await db.user.findUnique({ where: { email } });
+    if (existinguser) return fail(400, { error: 'Email existiert bereits' });
 
 
 
-// Passwort-Hashing Magie ~
+// folgendes hier unten, weil formData.get() kann null zurückgeben und muss erst validiert werden  in Zeile 66
 
-
+//10 ist die Salt-Runde → Sicherheitsfaktor
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    //wandelt String in date-objekt um,
-    const dbirth = new Date(dbirthStr);
+   
 
 
 
 
     // Benutzer in DB erstellen:
-      const created = await db.kunde.create({
-    data: {
-      email,
-      password: hashedPassword,
-      name,
-      fname,
-      dbirth,
-      street,
-      hausnummer,
-      ort,
-      plz
-    }
-  });
+    const created = await db.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        name,
+       
+      }
+    });
 
- return {
-    needsConsent: true,
-    userId: created.id
-  };
-  }, 
-  consent: async ({ request, cookies }) => {
-  const formData = await request.formData();
-  const userId = formData.get('userId')?.toString();
+    console.log("Created user:", created);
 
-  if (!userId) return fail(400, { error: "Fehler: userId fehlt" });
+    cookies.set('flash', 'Registrierung erfolgreich ', { path: '/', maxAge: 5 });
+    redirect(303, '/home');
 
-  cookies.set('session', userId, {
+  },
+  
+  gast: async ({ cookies }) => {
+  cookies.set('session', 'guest', {
     path: '/',
     httpOnly: true,
     sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 7
   });
-
-  cookies.set('flash', 'Login erfolgreich', {
-    path: '/',
-    maxAge: 5
-  });
-
-  throw redirect(303, "/dashboard");
+  cookies.set('flash', 'Willkommen als Gast!', { path: '/', maxAge: 5 });
+  redirect(303, '/Karte');
 }
-}
+  }

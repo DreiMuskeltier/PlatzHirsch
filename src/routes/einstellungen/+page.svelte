@@ -1,7 +1,7 @@
 
 
-<h1>Impressum</h1>
-<p>Blabla alle Rechte vorbehalten bla.</p>
+<h1>Einstellungen</h1>
+<p>hell dunkel benachrichtungen tracking etc</p>
 
 <script lang="ts">
 
@@ -14,12 +14,12 @@
 
 
 
- <div class="impressum-page">
+ <div class="einstellungen-page">
 
  </div>
 
  <style>
-.impressum-page { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff; }
+.einstellungen-page { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff; }
 
 </style>
 

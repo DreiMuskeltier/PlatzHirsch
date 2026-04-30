@@ -1,7 +1,7 @@
 
 
-<h1>Impressum</h1>
-<p>Blabla alle Rechte vorbehalten bla.</p>
+<h1>Kontakt</h1>
+<p>Blabla kontakiterne hifdbhcdfhl</p>
 
 <script lang="ts">
 
@@ -14,12 +14,12 @@
 
 
 
- <div class="impressum-page">
+ <div class="kontakt-page">
 
  </div>
 
  <style>
-.impressum-page { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff; }
+.kontakt-page { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff; }
 
 </style>
 
