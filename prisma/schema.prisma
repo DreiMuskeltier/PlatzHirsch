@@ -1,0 +1,171 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+//Merksatz: Migriere mit npx prisma migrate dev>//
+//////////////////////////////////////////////////
+// USER
+//////////////////////////////////////////////////
+
+model User {
+  id        String   @id @default(cuid())
+  name      String
+  email     String   @unique
+  password  String
+
+  rolle     String   @default("REGISTRIERT")
+
+  favoriten Favorite[]
+  kommentare Kommentar[]
+
+  // Moderation
+  erstellteVorschlaege OrtVorschlag[] @relation("CreatedBy")
+  gepruefteVorschlaege OrtVorschlag[] @relation("ReviewedBy")
+  erstellteOrte Ort[]
+  createdAt DateTime @default(now())
+}
+
+//////////////////////////////////////////////////
+// ORT (nur freigegebene Orte!)
+//////////////////////////////////////////////////
+
+model Ort {
+  id            String   @id @default(cuid())
+  name          String
+  beschreibung  String
+
+  lat           Float
+  lng           Float
+
+  // Wer hat den ursprünglichen Ort erstellt (über Vorschlag)
+  createdById   String
+  createdBy     User     @relation(fields: [createdById], references: [id])
+  vorschlaege OrtVorschlag[] @relation("OrtVorschlagZuOrt")
+
+  kommentare    Kommentar[]
+  favoriten     Favorite[]
+  tags          OrtTag[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+//////////////////////////////////////////////////
+// ORTSVORSCHLAG (NEU)
+//////////////////////////////////////////////////
+
+model OrtVorschlag {
+  id            String   @id @default(cuid())
+
+  name          String
+  beschreibung  String
+
+  lat           Float
+  lng           Float
+
+  // Status: BEANTRAGT | FREIGEGEBEN | ABGELEHNT
+  status        String   @default("BEANTRAGT")
+
+  // Referenz auf bestehenden Ort (für Änderungen)
+  originalOrtId String?
+  originalOrt   Ort? @relation("OrtVorschlagZuOrt", fields: [originalOrtId], references: [id])
+
+  // Wer hat den Vorschlag erstellt
+  createdById   String
+  createdBy     User     @relation("CreatedBy", fields: [createdById], references: [id])
+
+  // Wer hat geprüft
+  reviewedById  String?
+  reviewedBy    User?    @relation("ReviewedBy", fields: [reviewedById], references: [id])
+
+  reviewedAt    DateTime?
+  rejectionReason String?
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+//////////////////////////////////////////////////
+// KOMMENTAR
+//////////////////////////////////////////////////
+
+model Kommentar {
+  id        String   @id @default(cuid())
+  text      String
+
+  userId    String?          // ← optional (war: String)
+  sessionId String?          // ← neu: für Gäste
+  ortId     String
+
+  user      User? @relation(fields: [userId], references: [id])
+  ort       Ort  @relation(fields: [ortId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+//////////////////////////////////////////////////
+// FAVORITEN
+//////////////////////////////////////////////////
+
+model Favorite {
+  id        String   @id @default(cuid())
+
+  userId    String? 	// ← optional
+  sessionId String?          // ← neu: für Gäste
+  ortId     String
+
+  user      User? @relation(fields: [userId], references: [id])
+  ort       Ort  @relation(fields: [ortId], references: [id])
+
+  createdAt DateTime @default(now())
+
+  @@unique([userId, ortId])
+  @@unique([sessionId, ortId])  // ← neu
+}
+
+//////////////////////////////////////////////////
+// TAGS
+//////////////////////////////////////////////////
+
+model OrtTag {
+  id    String @id @default(cuid())
+  ortId String
+
+  tag   String
+
+  ort   Ort @relation(fields: [ortId], references: [id])
+
+  @@unique([ortId, tag])
+}
+
+//////////////////////////////////////////////////
+// JOB QUEUE
+//////////////////////////////////////////////////
+
+model Job {
+  id        String   @id @default(cuid())
+
+  type      String
+  payload   String
+
+  status    String   @default("PENDING")
+
+  attempts  Int      @default(0)
+
+  runAt     DateTime @default(now())
+
+  lockedAt  DateTime?
+  lockedBy  String?
+
+  lastError String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, runAt])
+}
