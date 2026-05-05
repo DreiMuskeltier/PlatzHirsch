@@ -1,6 +1,7 @@
 <script lang="ts">
 	import favicon from '$lib/assets/favicon.svg';
   import Menu from '$lib/components/Menu.svelte';
+  import 'leaflet/dist/leaflet.css'; //enthält alle Styles für Popups, Zoom-Buttons, etc.
   	
   	import { onMount } from 'svelte';
     import { goto } from '$app/navigation';
