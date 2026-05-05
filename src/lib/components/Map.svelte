@@ -23,9 +23,10 @@
       shadowUrl: '/images/marker-shadow.png',
     });
 
-    // Nur EINE Initialisierung ✅
+    // Initialisierung 
     map = L.map(mapElement, {
-      maxBounds: [[53.46, 9.96], [53.54, 10.08]],
+    
+      maxBounds: [[53.46, 10.00], [53.54, 10.0]],
       maxBoundsViscosity: 1.0,
       minZoom: 12
     }).setView(center, zoom);
@@ -47,6 +48,7 @@
 <style>
   .map {
     width: 100%;
-    height: 400px;
+    height: 100vh;
+    margin: 0 auto;
   }
 </style>
