@@ -23,21 +23,29 @@
       shadowUrl: '/images/marker-shadow.png',
     });
 
-    // Initialisierung 
-    map = L.map(mapElement, {
-    
-      maxBounds: [[53.46, 10.00], [53.54, 10.0]],
-      maxBoundsViscosity: 1.0,
-      minZoom: 12
-    }).setView(center, zoom);
+   
+const centerLat = 53.497;
+const centerLng = 10.018;
+const radius = 0.10; // größer = mehr Spielraum
 
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+map = L.map(mapElement, {  // Initialisierung 
+  maxBounds: [
+    [centerLat - radius, centerLng - radius],
+    [centerLat + radius, centerLng + radius]
+  ],
+  maxBoundsViscosity: 0.5,
+  minZoom: 12
+})
+.setView([centerLat, centerLng], 13);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
     L.marker(center).addTo(map).bindPopup('Hier bin ich!').openPopup();
   });
 
+
+  
   onDestroy(() => {
     if (map) map.remove();
   });
