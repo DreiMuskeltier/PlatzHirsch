@@ -2,36 +2,38 @@
   import { onMount, onDestroy } from 'svelte';
   import type { Map as LeafletMap } from 'leaflet';
 
-  export let center: [number, number] = [51.505, -0.09];
+  export let center: [number, number] = [53.497, 10.018];
   export let zoom: number = 13;
 
   let mapElement: HTMLDivElement;
   let map: LeafletMap;
 
   onMount(async () => {
-    // Leaflet nur im Browser laden (kein SSR)
     const L = await import('leaflet');
 
-    // Standard-Icon-Pfad korrigieren (Webpack/Vite Bug)
+    const container = mapElement as any;
+    if (container._leaflet_id) {
+      container._leaflet_id = null;
+    }
+
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
-      
-        iconRetinaUrl: '/images/marker-icon-2x.png', //der blaue Marker
-        iconUrl:       '/images/marker-icon.png',//derselbe Marker für Retina-Displays (doppelte Auflösung)
-        shadowUrl:     '/images/marker-shadow.png', //der Schatten unter dem Marker
-});
-    
+      iconRetinaUrl: '/images/marker-icon-2x.png',
+      iconUrl: '/images/marker-icon.png',
+      shadowUrl: '/images/marker-shadow.png',
+    });
 
-    
-
-//marker-shadow.png – der Schatten unter dem Marker
-    map = L.map(mapElement).setView(center, zoom);
+    // Nur EINE Initialisierung ✅
+    map = L.map(mapElement, {
+      maxBounds: [[53.46, 9.96], [53.54, 10.08]],
+      maxBoundsViscosity: 1.0,
+      minZoom: 12
+    }).setView(center, zoom);
 
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    // Beispiel-Marker
     L.marker(center).addTo(map).bindPopup('Hier bin ich!').openPopup();
   });
 

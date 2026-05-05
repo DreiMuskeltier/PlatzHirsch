@@ -1,5 +1,3 @@
-
-
 <h1>KARTE</h1>
 <p></p>
 <script lang="ts">
@@ -10,12 +8,19 @@
 </script>
 
 
-<Map center={[53.55, 10.0]} zoom={12} />
-<div>
-</div>
- <style>
+<Map center={[53.497000, 10.018000]} zoom={12} />
 
 
+
+ <div class="map">
+
+ </div>
+
+<style>
+  .map {
+    width: 100%;
+    height: 400px; /* Muss explizit gesetzt sein! */
+  }
 </style>
 
 <!--
