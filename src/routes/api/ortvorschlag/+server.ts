@@ -1,6 +1,15 @@
 import { json } from '@sveltejs/kit';
 import { OrtVorschlagService } from '$lib/server/ortVorschlag/ortVorschlag.service';
 
+export async function GET() {
+  try {
+    const orte = await OrtVorschlagService.getAll();
+    return json(orte);
+  } catch (error) {
+    return json({ error: 'Fehler beim Laden' }, { status: 500 });
+  }
+}
+
 export async function POST({ request }) {
   try {
     const body = await request.json();
@@ -34,4 +43,7 @@ export async function POST({ request }) {
       { status: 500 }
     );
   }
+
+  
 }
+
