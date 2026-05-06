@@ -11,11 +11,20 @@
   onMount(async () => {
     const L = await import('leaflet');
 
+
+
+    //Beim Entwickeln lädt SvelteKit die Komponente manchmal neu (HMR), das <div> bleibt aber drin
+    // Ohne  Reset -> grauer Bildschirm
+    //Hot Module Replacement: aktualisiert nur den geänderten Teil der Seite – ohne die ganze Seite neu zu laden:
     const container = mapElement as any;
     if (container._leaflet_id) {
       container._leaflet_id = null;
     }
 
+
+
+    //Vite (der Build-Tool von SvelteKit) zerstört die internen Bildpfade von Leaflet
+    // -->  werden die Marker-Icons manuell auf unsere lokalen Dateien in /static/images/ gesetzt
     delete (L.Icon.Default.prototype as any)._getIconUrl;
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: '/images/marker-icon-2x.png',
@@ -44,14 +53,22 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     L.marker(center).addTo(map).bindPopup('Hier bin ich!').openPopup();
   });
 
+//Lädt die eigentlichen Kartenbilder von OpenStreetMap
+// {s} → Subdomains (a/b/c) für paralleles Laden
+// {z} → Zoomstufe
+// {x}/{y} → Kachelposition
 
-  
+
+
+
+//Wenn die Komponente entfernt wird, wird die Karte sauber aus dem DOM (Document Object Model) gelöscht - > Verhindert Speicherlecks
   onDestroy(() => {
     if (map) map.remove();
   });
 </script>
 
-<div bind:this={mapElement} class="map"></div>
+
+<div bind:this={mapElement} class="map"></div> <!-- verbindet das <div> mit der mapElement Variable, Leaflet bekommt so Zugriff auf das DOM-Element-->
 
 <style>
   .map {
