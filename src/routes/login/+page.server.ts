@@ -90,7 +90,7 @@ console.log('🍪 Cookie gesetzt, setze Flash...');
     console.log("Created user:", created);
 
     cookies.set('flash', 'Registrierung erfolgreich ', { path: '/', maxAge: 5 });
-    redirect(303, '/home');
+    redirect(303, '/profil');
 
   },
   
