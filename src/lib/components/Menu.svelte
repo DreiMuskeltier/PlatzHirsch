@@ -3,7 +3,23 @@
   function toggleMenu() {
     offen = !offen;
   }
+
+
+  function schließeBeiKlickAußen(event: MouseEvent) {
+    const container = document.querySelector('.menu-container');
+    if (offen && container && !container.contains(event.target as Node)) {
+      offen = false;
+    }
+  }
+
+
+
+
+
+
+
 </script>
+<svelte:window on:click={schließeBeiKlickAußen} />
 
 <div class="menu-container">
   <button type="button" class="menu-btn" on:click={toggleMenu}>
@@ -61,6 +77,7 @@
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     z-index: 100;
     overflow: hidden;
+    z-index: 1000;
   }
 
   .burger-menu li a,

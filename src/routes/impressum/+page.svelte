@@ -19,7 +19,7 @@
  </div>
 
  <style>
-.impressum-page { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff; }
+.impressum-page { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: var(--bg); }
 
 </style>
 
