@@ -11,6 +11,6 @@
     </div>
 </div>
  <style>
-.startbereich-page { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #a1cfa4; }
-
+.startbereich-page { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: var(--bg); }
+  
 </style>

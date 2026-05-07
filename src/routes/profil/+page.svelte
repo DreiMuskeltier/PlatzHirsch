@@ -28,6 +28,7 @@
   justify-content: center; 
   align-items: center; 
   height: 100vh; 
-  background-color: #a2e2d8; 
+  background-color: var(--bg); 
+  color: var(--text);
 }
 </style>
