@@ -12,3 +12,4 @@ const res = await fetch("http://localhost:5173/api/ortvorschlag", {
 });
 
 console.log(await res.json());
+
