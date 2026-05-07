@@ -1,4 +1,9 @@
 <script lang="ts">
+
+import { redirect } from '@sveltejs/kit';
+import type { Actions } from '@sveltejs/kit';
+
+
   let offen = false;
   function toggleMenu() {
     offen = !offen;
@@ -15,7 +20,12 @@
 
 
 
-
+export const actions: Actions = {
+  logout: async ({ cookies }) => {
+    cookies.delete('session', { path: '/' });
+    throw redirect(303, '/login?mode=login');
+  }
+};
 
 
 </script>
