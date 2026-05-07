@@ -4,8 +4,8 @@
 <div class="startbereich-page">
   
   <div class="text-bild">
-    <p>Text über Hirsche und Plätze, und wo sie zu finden sind...Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind.</p>
-    <img src="/insel.png" alt="Insel" />
+    <p>Text über Hirsche und Plätze, und wo sie zu finden sind...Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind. Text über Hirsche und Plätze, und wo sie zu finden sind.</p>
+    <img src="/hirsch.jpg" alt="Hirsch" />
   </div>
 </div>
 
@@ -40,7 +40,7 @@ h1 {
 }
 
 .text-bild img {
-  width: 300px;
+  width: 600px;
   border-radius: 8px;
   object-fit: cover;
 }
