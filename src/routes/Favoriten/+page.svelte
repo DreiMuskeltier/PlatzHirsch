@@ -142,14 +142,14 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    border: 2px solid #3b82f6;
-    background: white;
+    border: 2px solid var(--border);
+    background: var(--bg-nav);
     font-size: 1.5rem;
     cursor: pointer;
     transition: background 0.2s;
   }
 
-  .rund:hover { background: #eff6ff; }
+  .rund:hover { background:var(--bg-nav-hover)}
 
   .label {
     font-size: 0.75rem;
@@ -177,7 +177,7 @@
     justify-content: center;
   }
 
-  .leer { color: #9ca3af; font-style: italic; }
+  .leer { color:var(--text); font-style: italic; }
 
   /* Karte */
   .karte-bereich { height: 400px; }
@@ -188,14 +188,20 @@
     flex-direction: column;
     gap: 0.75rem;
     max-width: 400px;
+    background: var(--bg);
+    background-color: var(--bg);
   }
-
+ 
   select {
     padding: 0.5rem;
-    border: 1px solid #ccc;
+    border: 1px solid var(--border);
     border-radius: 6px;
     font-size: 1rem;
+    background: var(--bg-nav);
+    color: var(--text);
+    cursor: pointer;
   }
+  select:hover { background:var(--bg-nav-hover)}
 
   .sterne { display: flex; gap: 0.25rem; }
 
@@ -204,18 +210,21 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: #d1d5db;
+    color: var(--text-nav);
     transition: color 0.15s;
   }
 
-  .stern.aktiv { color: #f59e0b; }
+  .stern.aktiv { color: var(--text-nav); }
 
   .speichern {
-    padding: 0.5rem 1rem;
-    background: #3b82f6;
-    color: white;
-    border: none;
+    padding: 0.5rem 0.5rem 0.5rem;
+    background: var(--bg-nav);
+    color: var(--text);
+    border: 1px solid var(--border);
     border-radius: 6px;
     cursor: pointer;
   }
+
+  .speichern:hover { background:var(--bg-nav-hover)}
+
 </style>

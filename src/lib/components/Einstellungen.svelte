@@ -71,7 +71,7 @@
   bottom: 5rem;
   right: 1.5rem;
   background: var(--bg-nav);
-  color: var(--text-nav);
+  color: var(--text);
   border: 1px solid var(--border);
   border-radius: 12px;
   padding: 1rem;
@@ -115,8 +115,8 @@ h3 { margin: 0; font-size: 1rem; }
   height: 32px;
   border-radius: 6px;
   border: 1px solid var(--border);
-  background: var(--bg-nav);
-  color: var(--text-nav);
+  background: var(--bg);
+  color: var(--text);
   cursor: pointer;
   font-weight: bold;
   transition: background 0.2s;
@@ -124,6 +124,7 @@ h3 { margin: 0; font-size: 1rem; }
 .schrift-buttons button:hover {
   background: var(--bg-nav-hover);
 }
+
 .reset {
   font-size: 0.8rem;
   color: var(--text-nav);

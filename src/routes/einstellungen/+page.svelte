@@ -19,7 +19,7 @@
  </div>
 
  <style>
-.einstellungen-page { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff; }
+.einstellungen-page { display: flex; justify-content: center; align-items: center; height: 100vh; background-color: var(--bg); color: var(--text) }
 
 </style>
 

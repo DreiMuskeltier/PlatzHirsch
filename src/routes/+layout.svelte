@@ -50,32 +50,34 @@
     transition: background 0.3s, color 0.3s;
 
     /* Light Mode */
-    --bg:           #ffffff;
-    --text:         #000000;
-    --bg-card:      #f5f5f5;
+    --bg:           #edfff4;
+    --text:         #005e31;
+    --bg-card:      #edfff4;
     --bg-nav:       #cdf4d3;
     --text-nav:     #149753;
     --bg-nav-hover: #84ce8e;
     --bg-flash:     #d4edda;
     --text-flash:   #155724;
-    --bg-footer:    #f5f5f5;
-    --border:       #dddddd;
+    --bg-footer:    #edfff4;
+    --border:       #dee6dc;
     --link:         #149753;
+    --clickbtn:     #5ede72;
   }
 
   .app.dark {
     /* Dark Mode */
-    --bg:           #1a1a1a;
-    --text:         #f0f0f0;
-    --bg-card:      #2a2a2a;
-    --bg-nav:       #1e3a2a;
+    --bg:           #08571f;
+    --text:         #ebffea;
+    --bg-card:       #08571f;
+    --bg-nav:       #237f4b;
     --text-nav:     #4ade80;
-    --bg-nav-hover: #2d5a3d;
-    --bg-flash:     #1a2e1a;
+    --bg-nav-hover: #4e8360;
+    --bg-flash:     #315b31;
     --text-flash:   #86efac;
-    --bg-footer:    #111111;
-    --border:       #333333;
+    --bg-footer:     #08571f;
+    --border:        #0e9635;
     --link:         #4ade80;
+    --clickbtn:         #23ba5a;
   }
 
   nav {

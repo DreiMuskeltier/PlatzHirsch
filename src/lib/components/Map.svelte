@@ -22,15 +22,17 @@
   markers = [];
 
   orte.forEach(ort => {
-    const popup = L.popup();
+    const popup = L.popup({ className: 'mein-popup' });
+    
 
     const container = document.createElement('div');
     container.innerHTML = `
+     
       <b>${ort.name}</b><br>
       ${ort.beschreibung ?? ''}<br>
       <button 
         id="fav-${ort.id}" 
-        style="margin-top:6px; cursor:pointer; background:none; border:none; font-size:1.4rem;pointer-events: all;"
+        style="margin-top:6px; cursor:pointer; background:none; border:none; font-size:1.4rem;pointer-events: all; color: var(--text)"
         title="Favorit">
         ☆
       </button>
@@ -114,6 +116,27 @@
   .map {
     width: 100%;
     height: 100vh;
-    margin: 0 auto;
+    max-width: 100%;
+    max-height: 100%;
   }
+
+
+:global(.mein-popup .leaflet-popup-content-wrapper) {
+  background: var(--bg);
+  border-radius: 8px;
+  border: 20px solid var(--bg);
+  box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+}
+
+:global(.mein-popup .leaflet-popup-tip) {
+  background: var(--bg);
+}
+
+:global(.mein-popup .leaflet-popup-content) {
+  color: var(--text);
+  margin: 0;
+  padding: 0;
+}
+
+
 </style>
