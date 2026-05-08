@@ -17,22 +17,42 @@
   }
 
   async function zeigeMarker(orte: any[]) {
-    const L = await import('leaflet');
+  const L = await import('leaflet');
+  markers.forEach(m => m.remove());
+  markers = [];
 
-    // Alte Marker entfernen bevor neue gesetzt werden
-    markers.forEach(m => m.remove());
-    markers = [];
+  orte.forEach(ort => {
+    const popup = L.popup();
 
-    orte.forEach(ort => {
-      const m = L.marker([ort.lat, ort.lng])
-        .addTo(map)
-        .bindPopup(`
-          <b>${ort.name}</b><br>
-          ${ort.beschreibung ?? ''}
-        `);
-      markers.push(m);
+    const container = document.createElement('div');
+    container.innerHTML = `
+      <b>${ort.name}</b><br>
+      ${ort.beschreibung ?? ''}<br>
+      <button 
+        id="fav-${ort.id}" 
+        style="margin-top:6px; cursor:pointer; background:none; border:none; font-size:1.4rem;pointer-events: all;"
+        title="Favorit">
+        ☆
+      </button>
+    `;
+
+    // Stern-Button Klick-Handler
+    container.querySelector(`#fav-${ort.id}`)?.addEventListener('click', async () => {
+      const btn = container.querySelector(`#fav-${ort.id}`) as HTMLButtonElement;
+      const res = await fetch('/Favoriten', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ortId: ort.id })
+      });
+      const data = await res.json();
+      btn.textContent = data.action === 'added' ? '★' : '☆';
     });
-  }
+
+    popup.setContent(container);
+    const m = L.marker([ort.lat, ort.lng]).addTo(map).bindPopup(popup);
+    markers.push(m);
+  });
+}
 
   onMount(async () => {
     const L = await import('leaflet');

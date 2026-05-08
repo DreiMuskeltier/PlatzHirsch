@@ -18,12 +18,12 @@
   let hover = 0;
 
   onMount(async () => {
-    const res = await fetch('/api/favoriten');
+    const res = await fetch('/Favoriten');
     favoriten = await res.json();
   });
 
   async function toggleFavorit(ortId: string) {
-    await fetch('/api/favoriten', {
+    await fetch('/Favoriten', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ortId })
@@ -34,7 +34,7 @@
 
   async function bewerten() {
     if (!ausgewaehlterOrt || sterne === 0) return;
-    await fetch('/api/bewertung', {
+    await fetch('/bewertung', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ortId: ausgewaehlterOrt.id, sterne })
