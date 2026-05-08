@@ -11,7 +11,7 @@
 
   // Orte von der API laden und als Marker anzeigen
   async function ladeOrte() {
-    const res = await fetch('/api/ortvorschlag');
+    const res = await fetch('/api/ort');
     const orte = await res.json();
     zeigeMarker(orte);
   }
