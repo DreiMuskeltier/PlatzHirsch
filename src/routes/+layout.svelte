@@ -60,6 +60,7 @@
     --text-flash:   #155724;
     --bg-footer:    #edfff4;
     --border:       #dee6dc;
+    --invisborder:  #cdf4d3;
     --link:         #149753;
     --clickbtn:     #5ede72;
   }
@@ -76,6 +77,7 @@
     --text-flash:   #86efac;
     --bg-footer:     #08571f;
     --border:        #0e9635;
+     --invisborder:        #237f4b;
     --link:         #4ade80;
     --clickbtn:         #23ba5a;
   }

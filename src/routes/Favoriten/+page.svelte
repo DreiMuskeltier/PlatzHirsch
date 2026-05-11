@@ -1,6 +1,7 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import Map from '$lib/components/Map.svelte';
+   
 
   type Ort = {
     id: string;
@@ -16,6 +17,7 @@
   let ausgewaehlterOrt: Ort | null = null;
   let sterne = 0;
   let hover = 0;
+  let popupOrt: Ort | null = null;
 
   onMount(async () => {
     const res = await fetch('/Favoriten');
@@ -79,6 +81,48 @@
       {/if}
     </div>
   </div>
+
+  <!-- Listendarstellung -->
+<div class="listen-bereich">
+  <h2>Liste</h2>
+
+  {#if favoriten.length === 0}
+    <p class="leer">Noch keine Favoriten gespeichert.</p>
+  {:else}
+    <ul class="liste">
+      {#each favoriten as ort}
+        <button class="ort-item" on:click={() => popupOrt = ort}>
+    
+          <span class="name">{ort.name}</span>
+          
+        </button>
+      {/each}
+    </ul>
+  {/if}
+</div>
+
+<!-- Popup -->
+{#if popupOrt}
+  <div class="overlay" role="presentation" on:click={() => popupOrt = null}>
+    <div class="overpopup" role="dialog" tabindex="0" on:click|stopPropagation on:keydown|stopPropagation>
+      <div class="overpopup-header">
+        <h3>{getIcon(popupOrt)} {popupOrt.name}</h3>
+        <button class="schliessen" on:click={() => popupOrt = null}>✕</button>
+      </div>
+      {#if popupOrt.tags?.length}
+        <div class="tags">
+          {#each popupOrt.tags as t}
+            <span class="tag">{t.tag}</span>
+          {/each}
+        </div>
+      {/if}
+      <p class="beschreibung">{popupOrt.beschreibung ?? 'Keine Beschreibung vorhanden.'}</p>
+      <button class="entfernen-btn" on:click={() => toggleFavorit(popupOrt!.id)}>
+        ✕ Aus Favoriten entfernen
+      </button>
+    </div>
+  </div>
+{/if}
 
 
 
@@ -179,6 +223,112 @@
 
   .leer { color:var(--text); font-style: italic; }
 
+
+/*Listendarstellung*/
+.liste {
+  list-style: none;
+  background: var(--bg-nav);
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 300px;
+  border-radius: 4px;
+  font-size: 1rem;
+  border: none; 
+  color: var(--text); 
+}
+
+.ort-item {
+  
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0rem 0.5rem;
+  background: var(--bg-nav);
+  border: 1px solid var(--invisborder);
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s;
+  
+}
+
+.ort-item:hover { background: var(--bg-nav-hover); }
+.icon { font-size: 1.25rem; }
+.name { flex: 1; font-size: 1rem; }
+.pfeil { color: var(--text); opacity: 0.4; font-size: 1.1rem; }
+
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.overpopup {
+  background: var(--bg-nav);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 1.5rem;
+  width: 340px;
+  max-width: 90vw;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.overpopup-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.overpopup-header h3 { margin: 0; font-size: 1.1rem; }
+
+.schliessen {
+  background: none;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+  color: var(--text);
+  opacity: 0.6;
+}
+
+.schliessen:hover { opacity: 1; }
+
+.tags { display: flex; flex-wrap: wrap; gap: 6px; }
+
+.tag {
+  font-size: 0.75rem;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+
+.beschreibung {
+  margin: 0;
+  font-size: 0.9rem;
+  opacity: 0.8;
+  line-height: 1.6;
+}
+
+.entfernen-btn {
+  padding: 0.4rem 0.75rem;
+  background: none;
+  border: 1px solid #ef4444;
+  color: #ef4444;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.85rem;
+  align-self: flex-start;
+}
+
+.entfernen-btn:hover { background: #ef444420; }
   /* Karte */
   .karte-bereich { height: 400px; }
 
