@@ -10,6 +10,7 @@
     lat: number;
     lng: number;
     tags: { tag: string }[];
+    bewertung?: number;
   };
 
   let favoriten: Ort[] = [];
@@ -33,7 +34,7 @@
     // Aus Liste entfernen
     favoriten = favoriten.filter(o => o.id !== ortId);
   }
-
+// Ort bewerten
   async function bewerten() {
     if (!ausgewaehlterOrt || sterne === 0) return;
     await fetch('/bewertung', {
@@ -41,10 +42,21 @@
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ortId: ausgewaehlterOrt.id, sterne })
     });
+
+    // Bewertung lokal speichern damit sie sofort sichtbar ist
+  favoriten = favoriten.map(o =>
+    o.id === ausgewaehlterOrt!.id ? { ...o, bewertung: sterne } : o
+  );
+
+
     sterne = 0;
     ausgewaehlterOrt = null;
   }
 
+  function sterneDarstellen(n: number | undefined) {
+  if (!n) return '';
+  return '★'.repeat(n) + '☆'.repeat(5 - n);
+}
   // Icons je nach Tag
   const kategorieIcon: Record<string, string> = {
     Park: '🌳',
@@ -68,7 +80,7 @@
     <div class="buttons">
       {#each favoriten as ort}
         <div class="ort-button">
-          <button class="rund" title={ort.name}>
+          <button class="rund" title={ort.name} on:click={() => popupOrt = ort}>
             {getIcon(ort)}
           </button>
           <span class="label">{ort.name}</span>
@@ -81,25 +93,33 @@
       {/if}
     </div>
   </div>
+   </div>
 
   <!-- Listendarstellung -->
 <div class="listen-bereich">
   <h2>Liste</h2>
-
   {#if favoriten.length === 0}
     <p class="leer">Noch keine Favoriten gespeichert.</p>
   {:else}
     <ul class="liste">
       {#each favoriten as ort}
         <button class="ort-item" on:click={() => popupOrt = ort}>
-    
+         
           <span class="name">{ort.name}</span>
-          
+          {#if ort.bewertung}
+            <span class="bewertung-mini">{sterneDarstellen(ort.bewertung)}</span>
+          {/if}
+      
         </button>
       {/each}
     </ul>
   {/if}
 </div>
+
+
+  
+
+
 
 <!-- Popup -->
 {#if popupOrt}
@@ -120,6 +140,12 @@
       <button class="entfernen-btn" on:click={() => toggleFavorit(popupOrt!.id)}>
         ✕ Aus Favoriten entfernen
       </button>
+      {#if popupOrt.bewertung}
+  <div class="popup-bewertung">
+    <span>Deine Bewertung:</span>
+    <span class="sterne-anzeige">{sterneDarstellen(popupOrt.bewertung)}</span>
+  </div>
+{/if}
     </div>
   </div>
 {/if}
@@ -155,7 +181,7 @@
     {/if}
   </div>
 
-</div>
+
 
 <style>
   .seite {
@@ -329,6 +355,27 @@
 }
 
 .entfernen-btn:hover { background: #ef444420; }
+
+
+.bewertung-mini {
+  font-size: 0.75rem;
+  color: gold;
+  letter-spacing: -1px;
+}
+
+.popup-bewertung {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.9rem;
+}
+
+.sterne-anzeige {
+  color: gold;
+  font-size: 1rem;
+}
+
+
   /* Karte */
   .karte-bereich { height: 400px; }
 
@@ -340,6 +387,7 @@
     max-width: 400px;
     background: var(--bg);
     background-color: var(--bg);
+    width: 300px;
   }
  
   select {
@@ -364,7 +412,7 @@
     transition: color 0.15s;
   }
 
-  .stern.aktiv { color: var(--text-nav); }
+  .stern.aktiv { color: gold; }
 
   .speichern {
     padding: 0.5rem 0.5rem 0.5rem;
