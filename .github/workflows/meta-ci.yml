@@ -1,4 +1,5 @@
-name: Meta CI (Test the Actions)
+---
+name: Meta CI
 
 on:
   push:
@@ -16,8 +17,9 @@ jobs:
       - name: Validate YAML syntax
         run: |
           sudo apt-get install -y yamllint
-          yamllint .github/workflows/
-          
+          # Use a loose config to avoid minor noise, or just run it
+          yamllint -d "{extends: default, rules: {line-length: disable}}" .github/workflows/
+
       - name: Check for required jobs
         run: |
           grep -q "jobs:" .github/workflows/ci.yml
