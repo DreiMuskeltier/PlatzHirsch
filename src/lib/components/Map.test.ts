@@ -37,7 +37,7 @@ vi.mock('leaflet', () => {
 });
 
 // Mock fetch for ladeOrte
-global.fetch = vi.fn();
+globalThis.fetch = vi.fn();
 
 describe('Map.svelte', () => {
     beforeEach(() => {

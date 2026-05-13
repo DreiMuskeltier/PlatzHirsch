@@ -77,19 +77,17 @@
       shadowUrl: '/images/marker-shadow.png',
     });
 
-    const centerLat = 53.497;
-    const centerLng = 10.018;
     const radius = 0.10; // größer = mehr Spielraum
 
     // Karte initialisieren
     map = L.map(mapElement, {
       maxBounds: [
-        [centerLat - radius, centerLng - radius],
-        [centerLat + radius, centerLng + radius]
+        [center[0] - radius, center[1] - radius],
+        [center[0] + radius, center[1] + radius]
       ],
       maxBoundsViscosity: 0.5,
       minZoom: 12
-    }).setView([centerLat, centerLng], 13);
+    }).setView(center, zoom);
 
     // Kartenbilder von OpenStreetMap laden
     // {s} → Subdomains (a/b/c) für paralleles Laden

@@ -1,6 +1,5 @@
 import { json } from '@sveltejs/kit';
 import { favoriteRepository } from '$lib/server/repositories/favoriteRepository';
-import { randomUUID } from 'crypto';
 
 function getAuth(cookies: any) {
   const session = cookies.get('session');
@@ -36,7 +35,7 @@ export async function POST({ request, cookies }) {
 
     // Gast ohne guestSession-Cookie → neue sessionId generieren
     if (!userId && !sessionId) {
-      sessionId = randomUUID();
+      sessionId = crypto.randomUUID();
       cookies.set('guestSession', sessionId, {
         path: '/',
         httpOnly: true,

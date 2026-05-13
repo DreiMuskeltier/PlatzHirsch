@@ -48,23 +48,23 @@
 
 <form on:submit|preventDefault={submit}>
   <div>
-    <label>Name:</label>
-    <input bind:value={name} required />
+    <label for="name">Name:</label>
+    <input id="name" bind:value={name} required />
   </div>
 
   <div>
-    <label>Beschreibung:</label>
-    <textarea bind:value={beschreibung}></textarea>
+    <label for="beschreibung">Beschreibung:</label>
+    <textarea id="beschreibung" bind:value={beschreibung}></textarea>
   </div>
 
   <div>
-    <label>Latitude:</label>
-    <input bind:value={lat} type="number" step="any" required />
+    <label for="lat">Latitude:</label>
+    <input id="lat" bind:value={lat} type="number" step="any" required />
   </div>
 
   <div>
-    <label>Longitude:</label>
-    <input bind:value={lng} type="number" step="any" required />
+    <label for="lng">Longitude:</label>
+    <input id="lng" bind:value={lng} type="number" step="any" required />
   </div>
 
   <button type="submit">Absenden</button>

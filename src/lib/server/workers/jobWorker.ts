@@ -70,12 +70,14 @@ async function handleOrtUpdated(payload: { ortId: string }) {
   });
 
   await Promise.all(
-    favorites.map(fav =>
-      sendEmail(
-        fav.user.email,
-        "Ort wurde aktualisiert",
-        `Ein gespeicherter Ort wurde geändert.`
-      )
-    )
+    favorites.map(fav => {
+      if (fav.user) {
+        return sendEmail(
+          fav.user.email,
+          "Ort wurde aktualisiert",
+          `Ein gespeicherter Ort wurde geändert.`
+        );
+      }
+    })
   );
 }

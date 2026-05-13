@@ -1,5 +1,7 @@
 <h1>Willkommen im Profil!</h1> 
-<!-- <p>Hallo {data.user.name},</p>  -->
+{#if data.user}
+  <p>Hallo {data.user.name},</p> 
+{/if}
  <p>AHOI</p>
 
 <script lang="ts">
