@@ -1,0 +1,25 @@
+name: Meta CI (Test the Actions)
+
+on:
+  push:
+    paths:
+      - '.github/workflows/**'
+  workflow_dispatch:
+
+jobs:
+  validate-workflows:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate YAML syntax
+        run: |
+          sudo apt-get install -y yamllint
+          yamllint .github/workflows/
+          
+      - name: Check for required jobs
+        run: |
+          grep -q "jobs:" .github/workflows/ci.yml
+          grep -q "build:" .github/workflows/ci.yml
+          echo "Basic structure check passed."

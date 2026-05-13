@@ -62,9 +62,11 @@
     // Beim Entwickeln lädt SvelteKit die Komponente manchmal neu (HMR), das <div> bleibt aber drin
     // Ohne Reset -> grauer Bildschirm
     const container = mapElement as any;
-    if (container._leaflet_id) {
+    if (container && container._leaflet_id) {
       container._leaflet_id = null;
     }
+
+    if (!mapElement) return;
 
     // Vite zerstört die internen Bildpfade von Leaflet
     // --> Marker-Icons manuell auf lokale Dateien in /static/images/ setzen
