@@ -49,7 +49,7 @@ model Ort {
   kommentare    Kommentar[]
   favoriten     Favorite[]
   tags          OrtTag[]
-
+  bewertungen   Bewertung[] 
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
 }
@@ -168,4 +168,25 @@ model Job {
   updatedAt DateTime @updatedAt
 
   @@index([status, runAt])
+}
+
+//////////////////////////////////////////////////
+// BEWERTUNG
+//////////////////////////////////////////////////
+
+model Bewertung {
+  id        String   @id @default(cuid())
+
+  userId    String?
+  sessionId String?
+  ortId     String
+  sterne    Int
+
+  ort       Ort @relation(fields: [ortId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, ortId])
+  @@unique([sessionId, ortId])
 }

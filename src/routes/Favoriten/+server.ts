@@ -1,5 +1,6 @@
 import { json } from '@sveltejs/kit';
 import { favoriteRepository } from '$lib/server/repositories/favoriteRepository';
+import { bewertungenRepository } from '$lib/server/repositories/bewertungenRepository';
 
 function getAuth(cookies: any) {
   const session = cookies.get('session');
@@ -20,7 +21,12 @@ export async function GET({ cookies }) {
     if (!userId && !sessionId) return json([]);
 
     const favoriten = await favoriteRepository.findAll(userId, sessionId);
-    return json(favoriten.map(f => f.ort));
+    const bewertungen = await bewertungenRepository.findAll(userId, sessionId);
+
+    return json(favoriten.map(f => ({
+      ...f.ort,
+      bewertung: bewertungen.find(b => b.ortId === f.ort.id)?.sterne ?? null
+    })));
   } catch (error) {
     return json({ error: 'Fehler beim Laden' }, { status: 500 });
   }

@@ -114,7 +114,7 @@
       {/each}
     </ul>
   {/if}
-</div>
+
 
 
   
@@ -180,7 +180,7 @@
       <button class="speichern" on:click={bewerten}>Bewertung speichern</button>
     {/if}
   </div>
-
+</div>
 
 
 <style>
