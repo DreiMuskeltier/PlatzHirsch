@@ -52,6 +52,7 @@
     /* Light Mode */
     --bg:           #edfff4;
     --text:         #005e31;
+    --text-hover:   #05ff8a;
     --bg-card:      #edfff4;
     --bg-nav:       #cdf4d3;
     --text-nav:     #149753;
@@ -69,6 +70,7 @@
     /* Dark Mode */
     --bg:           #08571f;
     --text:         #ebffea;
+    --text-hover:   #aff88f;
     --bg-card:       #08571f;
     --bg-nav:       #237f4b;
     --text-nav:     #4ade80;

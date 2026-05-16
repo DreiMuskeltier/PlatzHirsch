@@ -190,7 +190,7 @@ map.on('contextmenu', async (e: any) => { //e ist das Event-Objekt das Leaflet b
     max-height: 100%;
   }
 
-
+/* müssen global sein weil die sonst für leaflet nicht richtig funktionieren */
 :global(.mein-popup .leaflet-popup-content-wrapper) {
   background: var(--bg);
   border-radius: 8px;
