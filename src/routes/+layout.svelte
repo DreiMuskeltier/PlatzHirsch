@@ -5,8 +5,17 @@
   import { goto } from '$app/navigation';
   import { einstellungen } from '$lib/stores/einstellungen';
   import Einstellungen from '$lib/components/Einstellungen.svelte';
+  import { onMount } from 'svelte';  // ← neu
 
   export let data: { flash?: string };
+
+ let geladen = false;  // ← neu
+
+
+   onMount(() => {
+    geladen = true;  // ← neu
+  });
+
 
   function goToHome() { goto('/'); }
   function goTokarte() { goto('/Karte'); }
@@ -25,8 +34,18 @@
   {#if data.flash}
     <div class="flash-banner">{data.flash}</div>
   {/if}
-
+  
   <nav>
+  <button class="logo-button" on:click={goToHome} aria-label="Home">
+  {#if geladen}
+    <img 
+      src={$einstellungen.darkmode ? '/PlatzHirschLogoDarkMode.png' : '/PlatzHirschLogoLightMode.png'}
+      alt="PlatzHirsch" 
+    />
+  {:else}
+    <img src="/PlatzHirschLogoLightMode.png" alt="PlatzHirsch" />
+  {/if}
+</button>
     <button on:click={goToHome}>Home 🏠</button>
     <button on:click={goTokarte}>Karte 🧭</button>
     <button on:click={goTofavoriten}>Favoriten ♥️</button>
@@ -84,12 +103,27 @@
     --clickbtn:         #23ba5a;
   }
 
+.logo-button {
+  display: flex;
+  align-items: center;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  height: 100%;
+}
+
+.logo-button img {
+  height: 2.5rem;  /* ← hier die Größe anpassen */
+}
+
   nav {
     display: flex;
     gap: 1rem;
     padding: 0.75rem 1rem;
     background: var(--bg-card);
     border-bottom: 1px solid var(--border);
+    align-items: center;
   }
 
   nav button {
@@ -101,6 +135,7 @@
     padding: 0.3rem 0.6rem;
     border-radius: 4px;
     transition: background 0.2s;
+    align-items: center;
   }
 
   nav button:hover {
