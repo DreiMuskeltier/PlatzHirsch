@@ -1,49 +1,32 @@
 import { json } from '@sveltejs/kit';
 import { OrtVorschlagService } from '$lib/server/ortVorschlag/ortVorschlag.service';
 
-export async function GET() {
+export async function POST({ request, cookies }) {
   try {
-    const orte = await OrtVorschlagService.getAll();
-    return json(orte);
-  } catch (error) {
-    return json({ error: 'Fehler beim Laden' }, { status: 500 });
-  }
-}
+    const session = cookies.get('session');
 
-export async function POST({ request }) {
-  try {
+    // Gast oder nicht eingeloggt → 401
+    if (!session || session === 'guest') {
+      return json({ error: 'Nicht eingeloggt' }, { status: 401 });
+    }
+
     const body = await request.json();
 
+    if (!body.name || body.lat === undefined || body.lng === undefined) {
+      return json({ error: 'Fehlende Pflichtfelder' }, { status: 400 });
+    }
 
-  if (
-  !body.name ||
-  body.lat === undefined ||
-  body.lng === undefined ||
-  !body.userId
-) {
-  return json(
-    { error: 'Fehlende Pflichtfelder' },
-    { status: 400 }
-  );
-}
     const result = await OrtVorschlagService.create({
       name: body.name,
       beschreibung: body.beschreibung,
       lat: body.lat,
       lng: body.lng,
-      userId: body.userId
+      userId: session  // kommt jetzt aus dem Cookie
     });
 
     return json(result, { status: 201 });
-
   } catch (error) {
-    console.error("API ERROR:", error);
-    return json(
-      { error: 'Fehler beim Erstellen des Ortsvorschlags' },
-      { status: 500 }
-    );
+    console.error('API ERROR:', error);
+    return json({ error: 'Fehler beim Erstellen des Ortsvorschlags' }, { status: 500 });
   }
-
-  
 }
-

@@ -9,6 +9,11 @@
   let map: LeafletMap;
   let markers: Marker[] = [];
 
+  //für gedrückthalten und Ort hinzufügen
+  let vorschlagMarker: any = null;
+  let vorschlagLat: number | null = null;
+  let vorschlagLng: number | null = null;
+
   // Orte von der API laden und als Marker anzeigen
   async function ladeOrte() {
     const res = await fetch('/api/ort');
@@ -99,6 +104,63 @@
 
     // Orte aus der Datenbank laden und anzeigen
     await ladeOrte();
+
+
+    // Gedrückthalten → Ortsvorschlag
+map.on('contextmenu', async (e: any) => {
+  const L = await import('leaflet');
+  const { lat, lng } = e.latlng;
+
+  vorschlagLat = lat;
+  vorschlagLng = lng;
+
+  // Alter Vorschlag-Marker entfernen
+  if (vorschlagMarker) vorschlagMarker.remove();
+
+  const popup = L.popup({ className: 'mein-popup', closeOnClick: false });
+  const container = document.createElement('div');
+  container.innerHTML = `
+    <b>Ort vorschlagen</b><br>
+    <input id="vorschlag-name" placeholder="Name" style="width:100%; margin-top:6px; padding:4px; box-sizing:border-box;" /><br>
+    <textarea id="vorschlag-beschreibung" placeholder="Beschreibung" style="width:100%; margin-top:6px; padding:4px; box-sizing:border-box;"></textarea><br>
+    <button id="vorschlag-btn" style="margin-top:8px; cursor:pointer; padding:4px 10px; pointer-events:all;">Vorschlagen</button>
+    <p id="vorschlag-msg" style="color:green; margin:4px 0 0;"></p>
+    <p id="vorschlag-err" style="color:red; margin:4px 0 0;"></p>
+  `;
+
+  container.querySelector('#vorschlag-btn')?.addEventListener('click', async () => {
+    const name = (container.querySelector('#vorschlag-name') as HTMLInputElement).value.trim();
+    const beschreibung = (container.querySelector('#vorschlag-beschreibung') as HTMLTextAreaElement).value.trim();
+    const msg = container.querySelector('#vorschlag-msg') as HTMLElement;
+    const err = container.querySelector('#vorschlag-err') as HTMLElement;
+
+    if (!name) { err.textContent = 'Name ist Pflichtfeld'; return; }
+
+    const res = await fetch('/api/ortvorschlag', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name, beschreibung, lat, lng })
+    });
+
+    const data = await res.json();
+
+    if (res.status === 401) {
+      err.textContent = 'Bitte einloggen um einen Ort vorzuschlagen.';
+      return;
+    }
+
+    if (!res.ok) {
+      err.textContent = data.error ?? 'Fehler beim Vorschlagen';
+      return;
+    }
+
+    msg.textContent = 'Vorschlag eingereicht!';
+    setTimeout(() => { if (vorschlagMarker) vorschlagMarker.remove(); }, 1500);
+  });
+
+  popup.setContent(container);
+  vorschlagMarker = L.marker([lat, lng], { opacity: 0.6 }).addTo(map).bindPopup(popup).openPopup();
+});
   });
 
   // Wenn die Komponente entfernt wird, Karte sauber aus dem DOM löschen
