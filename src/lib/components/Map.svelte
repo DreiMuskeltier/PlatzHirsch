@@ -29,7 +29,7 @@
   orte.forEach(ort => {
     const popup = L.popup({ className: 'mein-popup' });
     
-
+// Popup Inhalt mit Favoriten-Button
     const container = document.createElement('div');
     container.innerHTML = `
      
@@ -43,7 +43,11 @@
       </button>
     `;
 
-    // Stern-Button Klick-Handler
+    // Stern-Button Klick-Handler: sucht ertserstmal Element mit der ID, hängt dann handler an den button, 
+    // dan. nochmal button holen aber als html elemment. 
+    // fetch(...) schcitk POSt anfrage an API mit ortID, body:json... wandelt JS.Objekt zu string (wweil html nur tetxt versendet)
+    // await res.json() liest API antwort wandelt sie zurück in json objekt 
+    // btn textContnt... setzt button je antwort, ? ist ABK. für Ternary-Operator also If else..)
     container.querySelector(`#fav-${ort.id}`)?.addEventListener('click', async () => {
       const btn = container.querySelector(`#fav-${ort.id}`) as HTMLButtonElement;
       const res = await fetch('/Favoriten', {
@@ -55,27 +59,27 @@
       btn.textContent = data.action === 'added' ? '★' : '☆';
     });
 
-    popup.setContent(container);
-    const m = L.marker([ort.lat, ort.lng]).addTo(map).bindPopup(popup);
-    markers.push(m);
+    popup.setContent(container); //Gibt Leaflet den fertigen container mit allem Inhalt und Event-Handlern >> Leaflet zeigt ihn dann im Popup an
+    const m = L.marker([ort.lat, ort.lng]).addTo(map).bindPopup(popup); //erstellt marker, fügt ihn zur Map sichtbar hinzu, verknüpft marker und popup und öffnet bei klicken
+    markers.push(m);//speichert den marker in der markers liste
   });
 }
 
   onMount(async () => {
-    const L = await import('leaflet');
+    const L = await import('leaflet'); //leaflet wird erst hier geladne >>"dynamischer Import", leaflet braucht browser zum funktionieren
 
     // Beim Entwickeln lädt SvelteKit die Komponente manchmal neu (HMR), das <div> bleibt aber drin
     // Ohne Reset -> grauer Bildschirm
-    const container = mapElement as any;
+    const container = mapElement as any; //div der karte
     if (container && container._leaflet_id) {
-      container._leaflet_id = null;
+      container._leaflet_id = null;//der Reset
     }
 
-    if (!mapElement) return;
+    if (!mapElement) return;//bricht ab wenn div nicht existieren sollte
 
     // Vite zerstört die internen Bildpfade von Leaflet
     // --> Marker-Icons manuell auf lokale Dateien in /static/images/ setzen
-    delete (L.Icon.Default.prototype as any)._getIconUrl;
+    delete (L.Icon.Default.prototype as any)._getIconUrl;//löscht intere leaflet funktion damit leaflet und svelte nicht meckern
     L.Icon.Default.mergeOptions({
       iconRetinaUrl: '/images/marker-icon-2x.png',
       iconUrl: '/images/marker-icon.png',
@@ -95,7 +99,7 @@
     }).setView(center, zoom);
 
     // Kartenbilder von OpenStreetMap laden
-    // {s} → Subdomains (a/b/c) für paralleles Laden
+    // {s} → auf Subdomains (a/b/c) verteilte anfragen für paralleles Laden
     // {z} → Zoomstufe
     // {x}/{y} → Kachelposition
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -107,7 +111,7 @@
 
 
     // Gedrückthalten → Ortsvorschlag
-map.on('contextmenu', async (e: any) => {
+map.on('contextmenu', async (e: any) => { //e ist das Event-Objekt das Leaflet beim Auslösen des Events automatisch mitgibt, also iNfos über dasEreignis
   const L = await import('leaflet');
   const { lat, lng } = e.latlng;
 
@@ -117,6 +121,7 @@ map.on('contextmenu', async (e: any) => {
   // Alter Vorschlag-Marker entfernen
   if (vorschlagMarker) vorschlagMarker.remove();
 
+  // Popup mit Formular erstellen, wird erst beim klicken erstellt an dem Punkt, wo der Nutzer geklickt hat
   const popup = L.popup({ className: 'mein-popup', closeOnClick: false });
   const container = document.createElement('div');
   container.innerHTML = `
@@ -129,12 +134,14 @@ map.on('contextmenu', async (e: any) => {
   `;
 
   container.querySelector('#vorschlag-btn')?.addEventListener('click', async () => {
-    const name = (container.querySelector('#vorschlag-name') as HTMLInputElement).value.trim();
+    const name = (container.querySelector('#vorschlag-name') as HTMLInputElement).value.trim(); //trim() damit keine Leerzeichen eingegeben werden können
     const beschreibung = (container.querySelector('#vorschlag-beschreibung') as HTMLTextAreaElement).value.trim();
     const msg = container.querySelector('#vorschlag-msg') as HTMLElement;
     const err = container.querySelector('#vorschlag-err') as HTMLElement;
 
-    if (!name) { err.textContent = 'Name ist Pflichtfeld'; return; }
+    if (!name) { err.textContent = 'Name ist Pflichtfeld'; return; 
+      
+    }
 
     const res = await fetch('/api/ortvorschlag', {
       method: 'POST',
@@ -144,6 +151,7 @@ map.on('contextmenu', async (e: any) => {
 
     const data = await res.json();
 
+    //muss eingeloggt sien um vorschlag machen zu können
     if (res.status === 401) {
       err.textContent = 'Bitte einloggen um einen Ort vorzuschlagen.';
       return;
@@ -158,7 +166,7 @@ map.on('contextmenu', async (e: any) => {
     setTimeout(() => { if (vorschlagMarker) vorschlagMarker.remove(); }, 1500);
   });
 
-  popup.setContent(container);
+  popup.setContent(container); //Leaflet nimmt dieses fertige DOM-Element und fügt es ins Popup ein –> jetzt wird es sichtbar auf der Karte
   vorschlagMarker = L.marker([lat, lng], { opacity: 0.6 }).addTo(map).bindPopup(popup).openPopup();
 });
   });
