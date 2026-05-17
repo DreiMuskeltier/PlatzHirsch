@@ -119,6 +119,7 @@
 }
 
   nav {
+    position: fixed;
     display: flex;
     gap: 1rem;
     padding: 0.75rem 1rem;

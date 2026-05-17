@@ -191,6 +191,7 @@ map.on('contextmenu', async (e: any) => { //e ist das Event-Objekt das Leaflet b
     height: 100vh;
     max-width: 100%;
     max-height: 100%;
+     padding-top: 3.5rem;
   }
 
 /* müssen global sein weil die sonst für leaflet nicht richtig funktionieren */
