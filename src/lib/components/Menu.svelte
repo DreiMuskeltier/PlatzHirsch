@@ -32,7 +32,7 @@ export const actions: Actions = {
 <svelte:window on:click={schließeBeiKlickAußen} />
 
 <div class="menu-container">
-  <button type="button" class="menu-btn" on:click={toggleMenu}>
+  <button type="button" class="menu-btn" on:click={toggleMenu} aria-label="Menu">
     ☰
   </button>
 
@@ -45,7 +45,7 @@ export const actions: Actions = {
       <li><a href="/kontakt">Kontakt</a></li>
       <li>
         <form method="POST" action="?/logout">
-          <button type="submit">Logout</button>
+          <button type="submit" aria-label="Logout">Logout</button>
         </form>
       </li>
     </ul>

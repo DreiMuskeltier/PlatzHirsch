@@ -47,10 +47,10 @@
     
   {/if}
 </button>
-    <button on:click={goToHome}>Home 🏠</button>
-    <button on:click={goTokarte}>Karte 🧭</button>
-    <button on:click={goTofavoriten}>Favoriten ♥️</button>
-    <button on:click={goToprofil}>Profil 👤</button>
+    <button on:click={goToHome} aria-label="Home">Home 🏠</button>
+    <button on:click={goTokarte} aria-label="Karte">Karte 🧭</button>
+    <button on:click={goTofavoriten} aria-label="Favoriten">Favoriten ♥️</button>
+    <button on:click={goToprofil} aria-label="Profil">Profil 👤</button>
     <Menu />
   </nav>
 

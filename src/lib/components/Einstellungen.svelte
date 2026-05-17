@@ -14,7 +14,7 @@
 <svelte:window on:click={schließeBeiKlickAußen} />
 
 <div bind:this={container}>
-  <button class="einstellungen-btn" on:click|stopPropagation={() => offen = !offen}>
+  <button class="einstellungen-btn" on:click|stopPropagation={() => offen = !offen} aria-label="Einstellungen">
     ⚙️
   </button>
 
@@ -26,7 +26,7 @@
       <button
         class="toggle"
         class:aktiv={$einstellungen.darkmode}
-        on:click={() => einstellungen.update(e => ({ ...e, darkmode: !e.darkmode }))}
+        on:click={() => einstellungen.update(e => ({ ...e, darkmode: !e.darkmode }))} aria-label="Darkmode changer"
       >
         {$einstellungen.darkmode ? '🌙' : '☀️'}
       </button>
@@ -34,12 +34,12 @@
     <div class="zeile">
       <span>Schrift</span>
       <div class="schrift-buttons">
-        <button on:click={() => einstellungen.update(e => ({ ...e, schriftgroesse: Math.max(12, e.schriftgroesse - 2) }))}>A-</button>
+        <button on:click={() => einstellungen.update(e => ({ ...e, schriftgroesse: Math.max(12, e.schriftgroesse - 2) }))} aria-label="Schriftgröße verkleinern">A-</button>
         <span>{$einstellungen.schriftgroesse}px</span>
-        <button on:click={() => einstellungen.update(e => ({ ...e, schriftgroesse: Math.min(24, e.schriftgroesse + 2) }))}>A+</button>
+        <button on:click={() => einstellungen.update(e => ({ ...e, schriftgroesse: Math.min(24, e.schriftgroesse + 2) }))} aria-label="Schriftgröße vergrößern">A+</button>
       </div>
     </div>
-    <button class="reset" on:click={() => einstellungen.set({ darkmode: false, schriftgroesse: 16 })}>
+    <button class="reset" on:click={() => einstellungen.set({ darkmode: false, schriftgroesse: 16 })} aria-label="Einstellungen zurücksetzen">
       Zurücksetzen
     </button>
   </div>
