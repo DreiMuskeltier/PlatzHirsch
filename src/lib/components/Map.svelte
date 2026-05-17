@@ -81,9 +81,12 @@
     // --> Marker-Icons manuell auf lokale Dateien in /static/images/ setzen
     delete (L.Icon.Default.prototype as any)._getIconUrl;//löscht intere leaflet funktion damit leaflet und svelte nicht meckern
     L.Icon.Default.mergeOptions({
-      iconRetinaUrl: '/images/marker-icon-2x.png',
-      iconUrl: '/images/marker-icon.png',
+      iconRetinaUrl: '/images/PlatzHirschLogoLightMode.png',
+      iconUrl: '/images/PlatzHirschLogoLightMode.png',
       shadowUrl: '/images/marker-shadow.png',
+      iconSize: [40, 40],     
+      iconAnchor: [20, 40],
+      popupAnchor: [0, -40]
     });
 
     const radius = 0.10; // größer = mehr Spielraum
