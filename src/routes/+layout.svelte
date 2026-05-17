@@ -44,6 +44,7 @@
     />
   {:else}
     <img src="/PlatzHirschLogoLightMode.png" alt="PlatzHirsch" />
+    
   {/if}
 </button>
     <button on:click={goToHome}>Home 🏠</button>
@@ -56,7 +57,7 @@
   <slot />
 
   <footer class="footer-fixed">
-    <p>© 2026 Mein Unternehmen. Alle Rechte vorbehalten. | <a href="/impressum">Impressum</a></p>
+    <p>© {new Date().getFullYear()} PlatzHirsch. Alle Rechte vorbehalten. | <a href="/impressum">Impressum</a></p>
   </footer>
 
 </div>
