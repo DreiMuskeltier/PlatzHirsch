@@ -1,19 +1,19 @@
 <script lang="ts">
-  import favicon from '$lib/assets/favicon.svg';
+  import PlatzHirschLogo from '$lib/assets/PlatzHirschLogo.png';
   import Menu from '$lib/components/Menu.svelte';
   import 'leaflet/dist/leaflet.css';
   import { goto } from '$app/navigation';
   import { einstellungen } from '$lib/stores/einstellungen';
   import Einstellungen from '$lib/components/Einstellungen.svelte';
-  import { onMount } from 'svelte';  // ← neu
+  import { onMount } from 'svelte';  
+   import { gesuchterOrt } from '$lib/stores/gesuchterOrt';
+
 
   export let data: { flash?: string };
 
- let geladen = false;  // ← neu
-
-
+ let geladen = false;  
    onMount(() => {
-    geladen = true;  // ← neu
+    geladen = true;  
   });
 
 
@@ -21,10 +21,43 @@
   function goTokarte() { goto('/Karte'); }
   function goToprofil() { goto('/profil'); }
   function goTofavoriten() { goto('/Favoriten'); }
+
+
+//Suchen
+
+let suchbegriff = '';
+  let ergebnisse: any[] = [];
+  let suchTimeout: any;
+
+  // Wird bei jedem Tastendruck aufgerufen
+  async function beiEingabe() {
+    // Debounce: wartet 300ms nach dem letzten Tastendruck
+    // verhindert dass bei jedem Buchstaben eine Anfrage geschickt wird
+    clearTimeout(suchTimeout);
+    suchTimeout = setTimeout(async () => {
+      if (suchbegriff.length < 2) {
+        ergebnisse = [];
+        return;
+      }
+      const res = await fetch(`/api/ort/suche?q=${suchbegriff}`);
+      ergebnisse = await res.json();
+    }, 300);
+  }
+
+  function ortAuswaehlen(ort: any) {
+    // Ort in den Store schreiben → Map.svelte reagiert darauf
+    gesuchterOrt.set(ort);
+    // Zur Karte navigieren falls nicht schon dort
+    goto('/Karte');
+    // Suchfeld leeren
+    suchbegriff = '';
+    ergebnisse = [];
+  }
+
 </script>
 
 <svelte:head>
-  <link rel="icon" href={favicon} />
+  <link rel="icon" href={PlatzHirschLogo} />
 </svelte:head>
 
 <div class="app" class:dark={$einstellungen.darkmode} style="font-size: {$einstellungen.schriftgroesse}px">
@@ -51,6 +84,28 @@
     <button on:click={goTokarte} aria-label="Karte">Karte 🧭</button>
     <button on:click={goTofavoriten} aria-label="Favoriten">Favoriten ♥️</button>
     <button on:click={goToprofil} aria-label="Profil">Profil 👤</button>
+
+     <!-- Suchleiste -->
+  <div class="suche-container">
+    <input
+      class="suche-input"
+      type="text"
+      placeholder="Ort finden..."
+      bind:value={suchbegriff}
+      on:input={beiEingabe}
+    />
+    {#if ergebnisse.length > 0}
+      <div class="suche-dropdown">
+        {#each ergebnisse as ort}
+          <button class="suche-ergebnis" on:click={() => ortAuswaehlen(ort)}>
+            {ort.name}
+          </button>
+        {/each}
+      </div>
+    {/if}
+  </div>
+
+
     <Menu />
   </nav>
 
@@ -119,7 +174,7 @@
 }
 
   nav {
-    position: fixed;
+   
     display: flex;
     gap: 1rem;
     padding: 0.75rem 1rem;
@@ -176,4 +231,46 @@
   .footer-fixed a:hover {
     text-decoration: underline;
   }
+
+  /*Suche*/
+  .suche-container {
+  position: relative;  /* damit das Dropdown absolut dazu positioniert werden kann */
+}
+
+.suche-input {
+  padding: 0.3rem 0.6rem;
+  border-radius: 4px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  font-size: 1rem;
+  width: 180px;
+}
+
+.suche-dropdown {
+  position: absolute;   /* schwebt über dem Rest der Seite */
+  top: 100%;            /* direkt unter dem Input */
+  left: 0;
+  right: 0;
+  background: var(--bg-nav);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  z-index: 2000;        /* über der Karte und Nav */
+  display: flex;
+  flex-direction: column;
+}
+
+.suche-ergebnis {
+  padding: 0.5rem;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.suche-ergebnis:hover {
+  background: var(--bg-nav-hover);
+}
 </style>

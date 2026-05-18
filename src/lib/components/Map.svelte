@@ -1,9 +1,45 @@
 <script lang="ts">
   import { onMount, onDestroy } from 'svelte';
   import type { Map as LeafletMap, Marker } from 'leaflet';
+  import { gesuchterOrt } from '$lib/stores/gesuchterOrt';
 
   export let center: [number, number] = [53.497, 10.018];
-  export let zoom: number = 13;
+  export let zoom: number = 13; //standardwert
+
+//Suche
+// $: reagiert automatisch wenn sich gesuchterOrt ändert
+  $: if ($gesuchterOrt && map) { //doppelte Prüfung ob Ort nicht 0 und ob karte initialisiert
+
+
+
+    //holt einzelne werte aus objekt
+    const lat = $gesuchterOrt.lat;
+    const lng = $gesuchterOrt.lng;
+    const id  = $gesuchterOrt.id; 
+
+    // Karte zu den Koordinaten fliegen, leaflet fnk.
+    map.flyTo([lat, lng], 16, { duration: 1 });
+
+    // Den passenden Marker finden und sein Popup öffnen
+   
+    const marker = markers.find(m => {
+      const pos = m.getLatLng();
+      return pos.lat === lat && pos.lng === lng;
+    });
+
+    if (marker) {
+      // Kurz warten bis flyTo fertig ist, dann Popup öffnen, time in ms
+      setTimeout(() => marker.openPopup(), 1000);
+    }
+
+    // Store zurücksetzen damit es nicht nochmal feuert beim nächsten rendern
+    gesuchterOrt.set(null);
+  }
+
+
+
+
+
 
   let mapElement: HTMLDivElement;
   let map: LeafletMap;
@@ -15,11 +51,16 @@
   let vorschlagLng: number | null = null;
 
   // Orte von der API laden und als Marker anzeigen
-  async function ladeOrte() {
-    const res = await fetch('/api/ort');
-    const orte = await res.json();
-    zeigeMarker(orte);
-  }
+async function ladeOrte() {
+  const center = map.getCenter();
+  const zoom = map.getZoom();
+  const url = `/api/ort?lat=${center.lat}&lng=${center.lng}&zoom=${zoom}`;
+  console.log('Lade Orte von:', url);
+  const res = await fetch(url);
+  const orte = await res.json();
+  console.log('Geladene Orte:', orte);
+  zeigeMarker(orte);
+}
 
   async function zeigeMarker(orte: any[]) {
   const L = await import('leaflet');
@@ -109,9 +150,10 @@
       attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
     }).addTo(map);
 
-    // Orte aus der Datenbank laden und anzeigen
+    // Orte aus der Datenbank laden und anzeigen, wenn zoom und move abgeschlossen
     await ladeOrte();
-
+map.on('moveend', ladeOrte);
+map.on('zoomend', ladeOrte);
 
     // Gedrückthalten → Ortsvorschlag
 map.on('contextmenu', async (e: any) => { //e ist das Event-Objekt das Leaflet beim Auslösen des Events automatisch mitgibt, also iNfos über dasEreignis
